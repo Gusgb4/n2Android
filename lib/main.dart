@@ -48,6 +48,7 @@ class _ChamadaV2State extends State<ChamadaV2> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Chamada Automática — V2 (Aluno)',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
