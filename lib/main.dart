@@ -28,13 +28,11 @@ class _ChamadaV2State extends State<ChamadaV2> {
     super.initState();
     app = AppState(
       clock: SimClock(
-        durationRoundActive: const Duration(seconds: 5),  // conforme pedido
-        durationBetweenRounds: const Duration(seconds: 10),
+        durationRoundActive: const Duration(seconds: 10), // conforme pedido
+        durationBetweenRounds: const Duration(seconds: 15),
         roundsPerNight: 4,
       ),
-      location: MockLocationService(
-        roomCenterLat: -23.559, roomCenterLon: -46.658, allowedRadiusMeters: 30,
-      ),
+      location: MockLocationService(),
       csv: CsvService(),
     );
   }

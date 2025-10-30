@@ -57,7 +57,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
             const SizedBox(height: 24),
             const Divider(),
             const Text(
-                'Rodadas (simulação N2): Ativa: 5s • Intervalo: 10s • Total: 4',
+                'Rodadas (simulação N2): Ativa: 10s, Intervalo: 15s, Total: 4',
                 style: TextStyle(color: Colors.black54)),
           ],
         ),

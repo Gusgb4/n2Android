@@ -26,13 +26,14 @@ class _HomeAlunoPageState extends State<HomeAlunoPage> {
   void _onChange() {
     // Snackbars de eventos (rodada iniciada/encerrada)
     if (!mounted) return;
-    if (widget.app.eventTick != _lastTickShown && widget.app.lastEvent != null) {
+    if (widget.app.eventTick != _lastTickShown &&
+        widget.app.lastEvent != null) {
       _lastTickShown = widget.app.eventTick;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(widget.app.lastEvent!)),
       );
     }
-    setState((){});
+    setState(() {});
   }
 
   @override
@@ -71,43 +72,58 @@ class _HomeAlunoPageState extends State<HomeAlunoPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (!widget.app.hasProfile) ...[
-                  const Text('Defina seu perfil para registrar presença', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text('Defina seu perfil para registrar presença',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 16),
-                  TextField(controller: _name, decoration: const InputDecoration(labelText: 'Seu nome')),
-                  TextField(controller: _id, decoration: const InputDecoration(labelText: 'Seu ID/matrícula')),
+                  TextField(
+                      controller: _name,
+                      decoration: const InputDecoration(labelText: 'Seu nome')),
+                  TextField(
+                      controller: _id,
+                      decoration:
+                          const InputDecoration(labelText: 'Seu ID/matrícula')),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {
                       if (_name.text.isNotEmpty && _id.text.isNotEmpty) {
                         widget.app.setProfile(_id.text, _name.text);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Preencha nome e ID.')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Preencha nome e ID.')));
                       }
                     },
                     child: const Text('Salvar perfil'),
                   ),
                   const SizedBox(height: 24),
                 ],
-
                 Text(
-                  round.index > 0 ? 'Rodada ${round.index}' : 'Sem rodada ativa',
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  round.index > 0
+                      ? 'Rodada ${round.index}'
+                      : 'Sem rodada ativa',
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 6),
-                Text('Tempo restante: ${widget.app.roundActiveRemaining.inSeconds}s'),
+                Text(
+                    'Tempo restante: ${widget.app.roundActiveRemaining.inSeconds}s'),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: (widget.app.isRoundActive && widget.app.hasProfile) ? () async {
-                    final msg = await widget.app.confirmPresence();
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-                  } : null,
-                  style: ElevatedButton.styleFrom(minimumSize: const Size(260, 54)),
+                  onPressed: (widget.app.isRoundActive && widget.app.hasProfile)
+                      ? () async {
+                          final msg = await widget.app.confirmPresence();
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(msg)));
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(260, 54)),
                   child: const Text('CONFIRMAR PRESENÇA'),
                 ),
                 const SizedBox(height: 12),
-                const Text('Validação de presença por GPS (simulado) — N2'),
-
+                const Text('Validação de presença por GPS (Até 50m da Sala)'),
                 const SizedBox(height: 24),
                 FilledButton.tonal(
                   onPressed: () {

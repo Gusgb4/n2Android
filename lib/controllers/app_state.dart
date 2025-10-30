@@ -18,17 +18,19 @@ class AppState extends ChangeNotifier {
 
   StudentProfile? _profile;
   final List<Attendance> _attendances = [];
-  final Map<int, RoundInfo> _rounds = { for (var i=1; i<=4; i++) i: RoundInfo(index: i) };
+  final Map<int, RoundInfo> _rounds = {
+    for (var i = 1; i <= 4; i++) i: RoundInfo(index: i)
+  };
   Duration _roundActiveRemaining = Duration.zero;
 
-  // Eventos para snackbars
   String? _lastEvent;
   int _eventTick = 0;
 
-  // Getters
   StudentProfile? get profile => _profile;
-  UnmodifiableListView<Attendance> get attendances => UnmodifiableListView(_attendances);
-  UnmodifiableMapView<int, RoundInfo> get rounds => UnmodifiableMapView(_rounds);
+  UnmodifiableListView<Attendance> get attendances =>
+      UnmodifiableListView(_attendances);
+  UnmodifiableMapView<int, RoundInfo> get rounds =>
+      UnmodifiableMapView(_rounds);
   Duration get roundActiveRemaining => _roundActiveRemaining;
   String? get lastEvent => _lastEvent;
   int get eventTick => _eventTick;
@@ -43,7 +45,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> startNightIfNeeded() async {
     if (clock.isRunning) return;
-    // Reseta rodadas
+
     for (final r in _rounds.values) {
       r.start = null;
       r.end = null;
@@ -89,31 +91,40 @@ class AppState extends ChangeNotifier {
     if (!isRoundActive) return 'Rodada não está ativa.';
     if (_profile == null) return 'Defina seu nome e ID nas Configurações.';
 
-    final reading = await location.getReading();
-    if (reading.isMockProvider) {
-      return 'Localização inválida (mock provider)';
-    }
-    if (!location.isInside(reading.distanceMeters)) {
-      return 'Fora do perímetro da sala';
-    }
+    try {
+      final reading = await location.getReading();
+      final isInside = await location.isInsideAllowedArea(reading);
 
-    final now = DateTime.now();
-    final round = currentRound.index;
-    final already = _attendances.any((a) => a.studentId == _profile!.id && a.roundIndex == round);
-    if (already) return 'Presença já registrada nesta rodada.';
+      if (!isInside) {
+        return 'Fora do perímetro da sala ou localização inválida.';
+      }
 
-    const status = 'P';
-    final entry = Attendance(
-      studentId: _profile!.id,
-      studentName: _profile!.name,
-      recordedAt: now,
-      roundIndex: round,
-      status: status,
-      validationMethod: 'GPS(simulated, dist=${reading.distanceMeters.toStringAsFixed(1)}m, acc=${reading.accuracyMeters.toStringAsFixed(0)}m)',
-    );
-    _attendances.add(entry);
-    notifyListeners();
-    return 'Presença confirmada!';
+      final now = DateTime.now();
+      final round = currentRound.index;
+      final already = _attendances.any(
+        (a) => a.studentId == _profile!.id && a.roundIndex == round,
+      );
+      if (already) return 'Presença já registrada nesta rodada.';
+
+      const status = 'P';
+      final entry = Attendance(
+        studentId: _profile!.id,
+        studentName: _profile!.name,
+        recordedAt: now,
+        roundIndex: round,
+        status: status,
+        validationMethod:
+            'GPS(lat=${reading.latitude.toStringAsFixed(5)}, lon=${reading.longitude.toStringAsFixed(5)}, acc=${reading.accuracyMeters.toStringAsFixed(1)}m)',
+      );
+
+      _attendances.add(entry);
+      notifyListeners();
+      return 'Presença confirmada!';
+    } catch (e) {
+      // ignore: avoid_print
+      print('Erro ao validar presença: $e');
+      return 'Erro ao acessar localização. Verifique as permissões.';
+    }
   }
 
   String buildCsv() => csv.buildCsv(_attendances);

@@ -14,6 +14,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 400), () {
+      if (!mounted) return; // 👈 evita o warning
       Navigator.pushReplacementNamed(context, '/home');
     });
   }
