@@ -7,6 +7,14 @@
 - Coordenada base sendo: -26.304677694575613, -48.849600049138274
 - Histórico e Relatório (CSV) disponíveis em tela (sem exportar o arquivo)
 
+
+
+O que arrumar:
+Distância da notificação no Relatório (está setado em 20.0m
+Confirmar se a coordenada aparece corretamente no Relatório
+Bottom overflowed by 44 pixels
+Fazer o APK
+
 ## Rodar
 ```
 flutter pub get
